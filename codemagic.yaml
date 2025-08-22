@@ -1,0 +1,33 @@
+workflows:
+  android_apk:
+    name: Build Android APK (auto-create + overlay app_src)
+    max_build_duration: 60
+    environment:
+      flutter: stable
+    scripts:
+      - name: Ensure Flutter folders exist (flutter create .)
+        script: |
+          if [ ! -d "android" ] || [ ! -d "ios" ] || [ ! -d "web" ]; then
+            echo "Running flutter create . to generate platform folders..."
+            flutter create .
+          fi
+      - name: Overlay app_src (pubspec, lib, assets)
+        script: |
+          echo "Copying app_src/pubspec.yaml -> pubspec.yaml"
+          cp -f app_src/pubspec.yaml pubspec.yaml
+          echo "Replacing lib with app_src/lib"
+          rm -rf lib
+          mkdir -p lib
+          cp -R app_src/lib/. lib/
+          echo "Replacing assets with app_src/assets"
+          rm -rf assets
+          mkdir -p assets
+          cp -R app_src/assets/. assets/ || true
+      - name: Fetch packages
+        script: |
+          flutter pub get
+      - name: Build release APK
+        script: |
+          flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
