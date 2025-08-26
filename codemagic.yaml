@@ -1,0 +1,22 @@
+﻿# Fix: app_src folder ko remove kar diya gaya hai.
+# Yeh file ab project ki root directory se kaam karegi.
+
+workflows:
+  android-workflow:
+    name: Yash Fashion Hub Android Build
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      android: true
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Build APK
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
