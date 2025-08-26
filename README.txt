@@ -1,1 +1,0 @@
-This is the Android folder. Run `flutter create .` locally to generate full structure.
